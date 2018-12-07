@@ -1,2 +1,4 @@
 .idea/*
 venv/
+dataset/summary.txt
+__pycache__/
