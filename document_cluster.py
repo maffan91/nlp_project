@@ -7,21 +7,22 @@ import re
 import nltk
 from sklearn.metrics.pairwise import cosine_similarity
 
+
 # import csv
 # import numpy as np
 # import os
 # import codecs
-# import matplotlib
+import matplotlib.pyplot as plt
 # from sklearn import feature_extraction
 # import mpld3
 # import helper
+from wordcloud import WordCloud
 
 print("Creating output file...")
 # read summary file:
 summary = open('dataset/summary.txt', 'r').readlines()
 
 stopwords = nltk.corpus.stopwords.words('english')
-
 
 stemmer = SnowballStemmer("english")
 
@@ -67,14 +68,13 @@ print('Here is the vocab_frame:')
 print(vocab_frame)
 print("Vectorization text frequencies...")
 
-
 tfidf_vectorizer = TfidfVectorizer(max_df=0.8, max_features=200000,
                                    min_df=0.1, stop_words='english',
                                    use_idf=True, tokenizer=tokenize_only, ngram_range=(1, 2))
 
 tfidf_matrix = tfidf_vectorizer.fit_transform(summary)
 terms = tfidf_vectorizer.get_feature_names()
-
+print(terms)
 dist = 1 - cosine_similarity(tfidf_matrix)
 
 print("Clustering data using: K-Mean clustering...")
@@ -102,6 +102,16 @@ for i in range(num_clusters):
     print("Cluster %d words:" % i, end='')
 
     for ind in order_centroids[i, :6]:  # replace 6 with n words per cluster
-        print(' %s' % vocab_frame.loc[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'), end=',')
+        print(' %s' % vocab_frame.loc[terms[ind].split(' ')].values.tolist()[0][0], end=',')
     print()
 
+word_cloud = WordCloud(width=800, height=800,
+                       background_color='white',
+                       stopwords=stopwords,
+                       min_font_size=10).generate(' '.join(terms))
+plt.figure(figsize=(8, 8), facecolor=None)
+plt.imshow(word_cloud)
+plt.axis("off")
+plt.tight_layout(pad=0)
+
+plt.show()
