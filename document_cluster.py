@@ -79,7 +79,7 @@ dist = 1 - cosine_similarity(tfidf_matrix)
 
 print("Clustering data using: K-Mean clustering...")
 
-num_clusters = 8
+num_clusters = 15
 
 km = KMeans(n_clusters=num_clusters)
 
@@ -102,6 +102,6 @@ for i in range(num_clusters):
     print("Cluster %d words:" % i, end='')
 
     for ind in order_centroids[i, :6]:  # replace 6 with n words per cluster
-        print(' %s' % vocab_frame.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'), end=',')
+        print(' %s' % vocab_frame.loc[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'), end=',')
     print()
 
